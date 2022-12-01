@@ -2,7 +2,10 @@ module github.com/bigwhoop/caddy-redir-file
 
 go 1.19
 
-require github.com/caddyserver/caddy/v2 v2.6.2
+require (
+	github.com/caddyserver/caddy/v2 v2.6.2
+	go.uber.org/zap v1.23.0
+)
 
 require (
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
@@ -92,7 +95,6 @@ require (
 	go.step.sm/linkedca v0.18.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
