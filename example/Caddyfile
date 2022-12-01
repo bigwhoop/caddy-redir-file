@@ -6,5 +6,6 @@ http://localhost:8090 {
     redir_file {
         path "/home/phil/Workspace/caddy-redir-file/example/redirects.csv"
         type "csv"
+        csv_separator ";"
     }
 }

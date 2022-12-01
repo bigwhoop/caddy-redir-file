@@ -10,6 +10,7 @@ Build caddy with `xcaddy`:
 
 ```bash
 xcaddy build --with github.com/bigwhoop/caddy-redir-file
+mv caddy /usr/bin/caddy 
 ```
 
 ## Configuration
@@ -24,6 +25,7 @@ www.domain.com {
     redir_file {
         path "/path/to/redirects.csv"
         type "csv"
+        csv_separator ";"
     }
 }
 ```

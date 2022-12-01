@@ -28,6 +28,9 @@ type Middleware struct {
 	// Type must be one of: "csv"
 	Type string `json:"type"`
 
+	// CsvSeparator allows to overwrite the default CSV separator
+	CsvSeparator rune `json:"csv_separator,omitempty"`
+
 	redirects Redirects
 	logger    *zap.Logger
 }
@@ -53,7 +56,8 @@ func (m *Middleware) Provision(ctx caddy.Context) error {
 	switch m.Type {
 	case "csv":
 		csvReader := csv.NewReader(f)
-		csvReader.Comma = ';'
+		csvReader.Comma = m.CsvSeparator
+
 		data, err := csvReader.ReadAll()
 		if err != nil {
 			return fmt.Errorf("failed reading file %s as CSV", m.Path)
@@ -111,6 +115,12 @@ func (m *Middleware) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 					return d.ArgErr()
 				}
 				m.Type = args[0]
+			case "csv_separator":
+				args := d.RemainingArgs()
+				if len(args) != 1 {
+					return d.ArgErr()
+				}
+				m.CsvSeparator = []rune(args[0])[0]
 			default:
 				return d.Errf("unrecognized subdirective %q", d.Val())
 			}
@@ -121,20 +131,13 @@ func (m *Middleware) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 
 // parseCaddyfile unmarshals tokens from h into a new Middleware.
 func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error) {
-	var m Middleware
-	err := m.UnmarshalCaddyfile(h.Dispenser)
-	return m, err
-}
-
-func buildUrlWithoutQuery(r *http.Request) string {
-	newUrl := *r.URL
-	newUrl.Host = r.Host
-	newUrl.Scheme = "http"
-	if r.TLS != nil {
-		newUrl.Scheme = "https"
+	m := Middleware{
+		CsvSeparator: ',',
 	}
-	newUrl.RawQuery = ""
-	return newUrl.String()
+
+	err := m.UnmarshalCaddyfile(h.Dispenser)
+
+	return m, err
 }
 
 // Interface guards
